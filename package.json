@@ -1,0 +1,16 @@
+{
+  "name": "blood-bank-firebase",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "firebase": "^12.19.0",
+    "vite": "^7.1.7"
+  },
+  "devDependencies": {}
+}

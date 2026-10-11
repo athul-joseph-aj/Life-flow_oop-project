@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeFlow Blood Bank</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="availability.css">
+</head>
+<body>
+<div class="app-shell">
+    <aside class="sidebar">
+        <div class="brand"><span class="brand-mark">✚</span><span>LifeFlow</span></div>
+        <p class="brand-caption">Blood bank management</p>
+        <nav>
+            <button class="nav-item active" data-section="dashboard"><span>⌂</span> Dashboard</button>
+            <button class="nav-item" data-section="donors"><span>♙</span> Donors</button>
+            <button class="nav-item" data-section="stock"><span>▣</span> Blood Stock</button>
+            <button class="nav-item" data-section="requests"><span>♡</span> Blood Requests</button>
+            <button class="nav-item" data-section="search"><span>⌕</span> Search Donor</button>
+        </nav>
+        <div class="sidebar-note"><strong>Every unit counts.</strong><br>Keep life moving forward.</div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <button class="mobile-menu" id="mobile-menu" aria-label="Open menu">☰</button>
+            <div><p class="eyebrow">BLOOD BANK MANAGEMENT</p><h1 id="page-title">Good day, coordinator</h1></div>
+            <div class="status-pill"><span></span> System online</div>
+        </header>
+
+        <div id="alert" class="alert" role="alert"></div>
+
+        <section id="dashboard" class="page-section active-section">
+            <div class="hero"><div><p class="eyebrow light">TODAY'S OVERVIEW</p><h2>Small actions.<br><em>Big difference.</em></h2><p>Keep donors, inventory, and patient requests in sync.</p></div><div class="hero-symbol">✚</div></div>
+            <div class="stats-grid">
+                <article class="stat-card"><span class="stat-icon red">♙</span><div><span>Total donors</span><strong id="total-donors">—</strong><small>Registered in the system</small></div></article>
+                <article class="stat-card"><span class="stat-icon blue">▣</span><div><span>Total blood stock</span><strong id="total-stock">—</strong><small>Units currently available</small></div></article>
+                <article class="stat-card"><span class="stat-icon amber">◷</span><div><span>Pending requests</span><strong id="pending-requests">—</strong><small>Need a decision</small></div></article>
+                <article class="stat-card"><span class="stat-icon green">♥</span><div><span>Available groups</span><strong id="available-groups">—</strong><small>Groups with stock</small></div></article>
+            </div>
+            <div class="dashboard-columns"><article class="panel"><div class="panel-heading"><div><p class="eyebrow">INVENTORY</p><h3>Current blood stock</h3></div><button class="text-button" data-section="stock">View all →</button></div><div id="dashboard-stock" class="mini-stock-grid"></div></article><article class="panel accent-panel"><p class="eyebrow">QUICK ACTION</p><h3>Need to find a donor?</h3><p>Search your donor directory by blood group and contact the right match quickly.</p><button class="primary-button" data-section="search">Search donors <span>→</span></button></article></div>
+        </section>
+
+        <section id="donors" class="page-section">
+            <div class="section-heading"><div><p class="eyebrow">DIRECTORY</p><h2>Donor management</h2><p>Add, update, and organize your registered donors.</p></div><button class="primary-button" id="show-donor-form">+ Add donor</button></div>
+            <form id="donor-form" class="panel form-panel hidden"><div class="panel-heading"><div><p class="eyebrow">DONOR PROFILE</p><h3 id="donor-form-title">Add a new donor</h3></div><button type="button" class="icon-button" id="cancel-donor">×</button></div><input type="hidden" id="donor-id"><div class="form-grid"><label>Full name<input id="donor-name" required placeholder="e.g. Ananya Nair"></label><label>Email address<input id="donor-email" type="email" required placeholder="donor@example.com"></label><label>Age<input id="donor-age" type="number" min="18" max="65" required placeholder="18–65"></label><label>Gender<select id="donor-gender" required><option value="">Select gender</option><option>Female</option><option>Male</option><option>Other</option></select></label><label>Blood group<select id="donor-group" required></select></label><label>Phone number<input id="donor-phone" required placeholder="10 digit phone number"></label><label>Address<input id="donor-address" required placeholder="City or full address"></label><label>Donation availability<select id="donor-availability"><option value="true">🟢 Available</option><option value="false">🔴 Not Available</option></select></label></div><p class="helper">New donors start as available. You can change this status from the donor list.</p><div class="form-actions"><button type="button" class="secondary-button" id="cancel-donor-2">Cancel</button><button class="primary-button" type="submit">Save donor</button></div></form>
+            <article class="panel"><div class="panel-heading"><div><p class="eyebrow">REGISTERED DONORS</p><h3>All donors</h3></div><span class="count-label" id="donor-count">0 donors</span></div><div class="table-wrap"><table><thead><tr><th>Donor</th><th>Blood group</th><th>Phone</th><th>Availability</th><th>Actions</th></tr></thead><tbody id="donors-table"></tbody></table></div></article>
+        </section>
+
+        <section id="stock" class="page-section">
+            <div class="section-heading"><div><p class="eyebrow">INVENTORY</p><h2>Blood stock</h2><p>Track every available unit across all blood groups.</p></div></div>
+            <div class="stock-layout"><article class="panel"><div class="panel-heading"><div><p class="eyebrow">LIVE AVAILABILITY</p><h3>Units by blood group</h3></div><button class="secondary-button" id="refresh-stock">↻ Refresh</button></div><div id="stock-grid" class="stock-grid"></div></article><article class="panel form-panel"><p class="eyebrow">UPDATE INVENTORY</p><h3>Adjust stock</h3><p class="helper">Use positive quantities to add or remove available units.</p><form id="stock-form"><label>Blood group<select id="stock-group" required></select></label><label>Units<input id="stock-units" type="number" min="1" required placeholder="e.g. 5"></label><div class="button-row"><button class="primary-button" type="submit" data-action="add">Add units</button><button class="danger-button" type="button" id="remove-stock">Remove units</button></div></form></article></div>
+        </section>
+
+        <section id="requests" class="page-section">
+            <div class="section-heading"><div><p class="eyebrow">PATIENT CARE</p><h2>Blood requests</h2><p>Review incoming requests and make stock decisions.</p></div><button class="primary-button" id="show-request-form">+ New request</button></div>
+            <form id="request-form" class="panel form-panel hidden"><div class="panel-heading"><div><p class="eyebrow">REQUEST DETAILS</p><h3>Create a blood request</h3></div><button type="button" class="icon-button" id="cancel-request">×</button></div><div class="form-grid"><label>Patient name<input id="patient-name" required placeholder="e.g. Rahul Menon"></label><label>Requester email<input id="patient-email" type="email" required placeholder="requester@example.com"></label><label>Patient age<input id="patient-age" type="number" min="0" max="120" required placeholder="Age"></label><label>Contact number<input id="patient-contact" required placeholder="Phone number"></label><label>Required blood group<select id="request-group" required></select></label><label>Required units<input id="request-units" type="number" min="1" required placeholder="e.g. 2"></label></div><div class="form-actions"><button type="button" class="secondary-button" id="cancel-request-2">Cancel</button><button class="primary-button" type="submit">Create request</button></div></form>
+            <article class="panel"><div class="panel-heading"><div><p class="eyebrow">REQUEST QUEUE</p><h3>All requests</h3></div><button class="text-button" id="refresh-requests">↻ Refresh</button></div><div class="table-wrap"><table><thead><tr><th>Patient</th><th>Blood group</th><th>Units</th><th>Contact</th><th>Status</th><th>Actions</th></tr></thead><tbody id="requests-table"></tbody></table></div></article>
+        </section>
+
+        <section id="search" class="page-section">
+            <div class="section-heading"><div><p class="eyebrow">DIRECTORY SEARCH</p><h2>Find a donor</h2><p>Filter the donor directory by blood group.</p></div></div>
+            <article class="panel search-panel"><div class="search-controls"><label>Blood group<select id="search-group"></select></label><label>Pending request<select id="select-request"><option value="">Create a request first</option></select></label><label>Name or contact<input id="search-text" placeholder="Optional search text"></label><button class="primary-button" id="search-button">Search donors</button></div></article>
+            <article class="panel"><div class="panel-heading"><div><p class="eyebrow">MATCHING DONORS</p><h3 id="search-title">Choose a blood group to begin</h3></div></div><div id="search-results" class="search-results empty-state">Donor matches will appear here.</div></article>
+        </section>
+    </main>
+</div>
+<script type="module" src="script.js"></script>
+</body>
+</html>

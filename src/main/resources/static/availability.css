@@ -1,0 +1,4 @@
+.primary-button:disabled{background:#d7dce4;color:#7f8996;cursor:not-allowed;transform:none}
+.availability{font-size:12px!important;font-weight:600}
+.availability.is-available{color:#258355!important}
+.availability.is-unavailable{color:#b33b43!important}

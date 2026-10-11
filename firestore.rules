@@ -1,0 +1,56 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function admin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    match /donors/{donorId} {
+      // Donor search needs to show donor availability to signed-in users.
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.ownerId == request.auth.uid;
+      // A requester may atomically reserve/release a donor, but cannot change
+      // the donor's availability or identity fields in that operation.
+      allow update: if signedIn() && (
+        (resource.data.ownerId == request.auth.uid
+          && request.resource.data.ownerId == resource.data.ownerId)
+        || (!('ownerId' in resource.data)
+          && request.resource.data.ownerId == request.auth.uid)
+        || request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['currentlyAssigned', 'currentRequestId'])
+      );
+      allow delete: if signedIn() && resource.data.ownerId == request.auth.uid;
+    }
+
+    match /bloodRequests/{requestId} {
+      // The existing coordinator screen lists the request queue. Mutations
+      // are still limited to the requester or a manually assigned admin.
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.requesterId == request.auth.uid;
+      allow update: if signedIn() && (
+        admin() || resource.data.requesterId == request.auth.uid
+      );
+      allow delete: if signedIn() && (
+        admin() || resource.data.requesterId == request.auth.uid
+      );
+    }
+
+    match /bloodStock/{stockId} {
+      allow read, write: if signedIn();
+    }
+
+    // Admin roles are created manually in the Firebase console. Clients can
+    // read their own role, but cannot promote themselves.
+    match /users/{userId} {
+      allow read: if signedIn() && (userId == request.auth.uid || admin());
+      allow write: if false;
+    }
+  }
+}
